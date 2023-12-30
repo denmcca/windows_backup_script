@@ -10,9 +10,16 @@ TITLE Windows Backup Script
 ECHO Windows Backup initialized...
 
 SET inputFilePath=%~1
-ECHO Input File Path: %inputFilePath%
-
 SET dest=%~2
+
+@REM Replacing backslashes with forwardslashes
+SET "inputFilePath=%inputFilePath:\=/%"
+SET "dest=%dest:\=/%"
+
+@REM Ensure dest has trailing forwardslash
+IF NOT %dest:~-1%==/ SET dest=%dest%/
+
+ECHO Input File Path: %inputFilePath%
 ECHO Backup path: %dest%
 
 GOTO :MAIN
@@ -37,6 +44,16 @@ EXIT /B 0
 
 @REM Start function
 :BackupDir
+IF %1=="" (
+    ECHO No value for source.
+    EXIT /B 1
+)
+
+IF %2=="" (
+    ECHO No value for destination.
+    EXIT /B 1
+)
+
 ECHO Backing up %~1 to %~2 ...
 
 robocopy "%~1" "%~2" /MIR
