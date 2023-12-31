@@ -32,13 +32,17 @@ FOR /F "tokens=* delims=" %%d in (%inputFilePath%) DO (
     ECHO =========================
 
     SET sourceDir=%%~d
+    SET "sourceDir=!sourceDir:\=/!"
     @REM Use exclamation marks instead of percent signs for variables set in loop??
     IF !sourceDir:~-1!==/ SET sourceDir=!sourceDir:~0,-1!
     CALL :TRIM !sourceDir!
     
-    CALL :GETLAST last "!sourceDir!" 
-    SET destDir=%dest%!last!
+    CALL :GETLAST subDestDir "!sourceDir!"
+    IF "!subDestDir:~-1!"=="%:" SET subDestDir=!subDestDir:~0,-1!
 
+    ECHO subDestDir: !subDestDir!
+    SET destDir=%dest%!subDestDir!
+    
     ECHO sourceDir: !sourceDir!
     ECHO destDir: !destDir!
 
@@ -84,9 +88,12 @@ EXIT /B 0
 @REM End main
 
 :TRIM
+ECHO Trimming: %~1
 SET %~1=%~1
+ECHO Trim result: %~1
 EXIT /B 0
 
 :GETLAST
-SET %~1=%~N2
+ECHO Getting last token from: %~2
+IF "%~N2"=="" (SET "%~1=%~2") ELSE (SET "%~1=%~N2")
 EXIT /B 0
