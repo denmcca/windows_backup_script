@@ -10,9 +10,16 @@ TITLE Windows Backup Script
 ECHO Windows Backup initialized...
 
 SET inputFilePath=%~1
-ECHO Input File Path: %inputFilePath%
-
 SET dest=%~2
+
+@REM Replacing backslashes with forwardslashes
+SET "inputFilePath=%inputFilePath:\=/%"
+SET "dest=%dest:\=/%"
+
+@REM Ensure dest has trailing forwardslash
+IF NOT %dest:~-1%==/ SET dest=%dest%/
+
+ECHO Input File Path: %inputFilePath%
 ECHO Backup path: %dest%
 
 GOTO :MAIN
@@ -23,9 +30,19 @@ ECHO Started backing up directories...
 
 FOR /F "tokens=* delims=" %%d in (%inputFilePath%) DO (
     ECHO =========================
-    ECHO %dest%
-    ECHO %%~Nd
-    CALL :BackupDir "%%d" "%dest%%%~Nd"
+
+    SET sourceDir=%%~d
+    @REM Use exclamation marks instead of percent signs for variables set in loop??
+    IF !sourceDir:~-1!==/ SET sourceDir=!sourceDir:~0,-1!
+    CALL :TRIM !sourceDir!
+    
+    CALL :GETLAST last "!sourceDir!" 
+    SET destDir=%dest%!last!
+
+    ECHO sourceDir: !sourceDir!
+    ECHO destDir: !destDir!
+
+    CALL :BackupDir "!sourceDir!" "!destDir!"
 )
 
 ECHO =========================
@@ -37,11 +54,21 @@ EXIT /B 0
 
 @REM Start function
 :BackupDir
-ECHO Backing up %~1 to %~2 ...
+IF %1=="" (
+    ECHO No value for source.
+    EXIT /B 1
+)
+
+IF %2=="" (
+    ECHO No value for destination.
+    EXIT /B 1
+)
+
+ECHO Backing up %1 to %2 ...
 
 robocopy "%~1" "%~2" /MIR
 
-ECHO Completed backing up %~1.
+ECHO Completed backing up %1.
 
 EXIT /B 0
 @REM End function
@@ -56,3 +83,10 @@ PAUSE
 EXIT /B 0
 @REM End main
 
+:TRIM
+SET %~1=%~1
+EXIT /B 0
+
+:GETLAST
+SET %~1=%~N2
+EXIT /B 0
