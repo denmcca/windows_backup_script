@@ -31,7 +31,7 @@ echo Backup path: %dest%
 
 goto :main
 
-@rem Start function
+
 :backupDirs
     echo Started backing up directories...
 
@@ -61,46 +61,38 @@ goto :main
     echo Finished backing up directories.
 
 exit /b 0
-@rem End function
 
-@rem Start function
 :backupDir
-if %1=="" (
-    echo No value for source.
-    exit /b 1
-)
+    if %1=="" (
+        echo No value for source.
+        exit /b 1
+    )
 
-if %2=="" (
-    echo No value for destination.
-    exit /b 1
-)
+    if %2=="" (
+        echo No value for destination.
+        exit /b 1
+    )
 
-echo Backing up %1 to %2 ...
+    echo Backing up %1 to %2 ...
 
-robocopy "%~1" "%~2" /MIR
+    robocopy "%~1" "%~2" /MIR
 
-echo Completed backing up %1.
-
-exit /b 0
-@rem End function
-
-@rem Start main
-:main
-
-call :backupDirs %inputFilePath% , %dest%
-
-pause
+    echo Completed backing up %1.
 
 exit /b 0
-@rem End main
 
 :trim
-echo Trimming: %~1
-set %~1=%~1
-echo Trim result: %~1
-exit /b 0
+    echo Trimming: %~1
+    set %~1=%~1
+    echo Trim result: %~1
+goto :eof
 
 :getLast
-echo Getting last token from: %~2
-if "%~N2"=="" (set "%~1=%~2") else (set "%~1=%~N2")
+    echo Getting last token from: %~2
+    if "%~N2"=="" (set "%~1=%~2") else (set "%~1=%~N2")
+goto :eof
+
+:main
+    call :backupDirs %inputFilePath% , %dest%
+    pause
 exit /b 0
