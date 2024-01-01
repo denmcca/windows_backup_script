@@ -1,9 +1,16 @@
 @ECHO OFF
 
+@rem ***********************************************************************
+@rem This batch/command script backs up and syncs the directories found in
+@rem the given config file (argument 1) to the given directory (argument 2).
+@rem call WindowsBackupScript -dirfile -destpath
+@rem -dirfile File which contains the string of directories delimited by
+@rem newline.
+@rem -destpath Location where the target source directories will be stored
+@rem using the target source directory name as a sub-directory.
+@rem ***********************************************************************
+
 setlocal enabledelayedexpansion
-:: This CMD script backs up and syncs the directories 
-:: found in the given config file (argument 1) to the 
-:: given directory (argument 2)
 
 TITLE Windows Backup Script
 
