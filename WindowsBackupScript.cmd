@@ -1,4 +1,4 @@
-@ECHO OFF
+@echo off
 
 @rem ***********************************************************************
 @rem This batch/command script backs up and syncs the directories found in
@@ -12,95 +12,95 @@
 
 setlocal enabledelayedexpansion
 
-TITLE Windows Backup Script
+title Windows Backup Script
 
-ECHO Windows Backup initialized...
+echo Windows Backup initialized...
 
-SET inputFilePath=%~1
-SET dest=%~2
+set inputFilePath=%~1
+set dest=%~2
 
-@REM Replacing backslashes with forwardslashes
-SET "inputFilePath=%inputFilePath:\=/%"
-SET "dest=%dest:\=/%"
+@rem Replacing backslashes with forwardslashes
+set "inputFilePath=%inputFilePath:\=/%"
+set "dest=%dest:\=/%"
 
-@REM Ensure dest has trailing forwardslash
-IF NOT %dest:~-1%==/ SET dest=%dest%/
+@rem Ensure dest has trailing forwardslash
+if not %dest:~-1%==/ set dest=%dest%/
 
-ECHO Input File Path: %inputFilePath%
-ECHO Backup path: %dest%
+echo Input File Path: %inputFilePath%
+echo Backup path: %dest%
 
-GOTO :MAIN
+goto :main
 
-@REM Start function
-:BackupDirs
-ECHO Started backing up directories...
+@rem Start function
+:backupDirs
+echo Started backing up directories...
 
-FOR /F "tokens=* delims=" %%d in (%inputFilePath%) DO (
-    ECHO =========================
+for /F "tokens=* delims=" %%d in (%inputFilePath%) DO (
+    echo =========================
 
-    SET sourceDir=%%~d
-    SET "sourceDir=!sourceDir:\=/!"
-    @REM Use exclamation marks instead of percent signs for variables set in loop??
-    IF !sourceDir:~-1!==/ SET sourceDir=!sourceDir:~0,-1!
-    CALL :TRIM !sourceDir!
+    set sourceDir=%%~d
+    set "sourceDir=!sourceDir:\=/!"
+    @rem Use exclamation marks instead of percent signs for variables set in loop??
+    if !sourceDir:~-1!==/ set sourceDir=!sourceDir:~0,-1!
+    call :trim !sourceDir!
     
-    CALL :GETLAST subDestDir "!sourceDir!"
-    IF "!subDestDir:~-1!"=="%:" SET subDestDir=!subDestDir:~0,-1!
+    call :getLast subDestDir "!sourceDir!"
+    if "!subDestDir:~-1!"=="%:" set subDestDir=!subDestDir:~0,-1!
 
-    ECHO subDestDir: !subDestDir!
-    SET destDir=%dest%!subDestDir!
+    echo subDestDir: !subDestDir!
+    set destDir=%dest%!subDestDir!
     
-    ECHO sourceDir: !sourceDir!
-    ECHO destDir: !destDir!
+    echo sourceDir: !sourceDir!
+    echo destDir: !destDir!
 
-    CALL :BackupDir "!sourceDir!" "!destDir!"
+    call :backupDir "!sourceDir!" "!destDir!"
 )
 
-ECHO =========================
+echo =========================
 
-ECHO Finished backing up directories.
+echo Finished backing up directories.
 
-EXIT /B 0
-@REM End function
+exit /B 0
+@rem End function
 
-@REM Start function
-:BackupDir
-IF %1=="" (
-    ECHO No value for source.
-    EXIT /B 1
+@rem Start function
+:backupDir
+if %1=="" (
+    echo No value for source.
+    exit /B 1
 )
 
-IF %2=="" (
-    ECHO No value for destination.
-    EXIT /B 1
+if %2=="" (
+    echo No value for destination.
+    exit /B 1
 )
 
-ECHO Backing up %1 to %2 ...
+echo Backing up %1 to %2 ...
 
 robocopy "%~1" "%~2" /MIR
 
-ECHO Completed backing up %1.
+echo Completed backing up %1.
 
-EXIT /B 0
-@REM End function
+exit /B 0
+@rem End function
 
-@REM Start main
-:MAIN
+@rem Start main
+:main
 
-CALL :BackupDirs %inputFilePath% , %dest%
+call :backupDirs %inputFilePath% , %dest%
 
-PAUSE
+pause
 
-EXIT /B 0
-@REM End main
+exit /B 0
+@rem End main
 
-:TRIM
-ECHO Trimming: %~1
-SET %~1=%~1
-ECHO Trim result: %~1
-EXIT /B 0
+:trim
+echo Trimming: %~1
+set %~1=%~1
+echo Trim result: %~1
+exit /B 0
 
-:GETLAST
-ECHO Getting last token from: %~2
-IF "%~N2"=="" (SET "%~1=%~2") ELSE (SET "%~1=%~N2")
-EXIT /B 0
+:getLast
+echo Getting last token from: %~2
+if "%~N2"=="" (set "%~1=%~2") else (set "%~1=%~N2")
+exit /B 0
