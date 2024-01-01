@@ -33,6 +33,7 @@ goto :main
 
 
 :backupDirs
+    @rem Read directory file and do backup for each one.
     echo Started backing up directories...
 
     for /F "tokens=* delims=" %%d in (%inputFilePath%) DO (
@@ -63,6 +64,7 @@ goto :main
 exit /b 0
 
 :backupDir
+    @rem Call backup executable.
     if %1=="" (
         echo No value for source.
         exit /b 1
@@ -82,12 +84,17 @@ exit /b 0
 exit /b 0
 
 :trim
+    @rem Get rid of trailing whitespace.
     echo Trimming: %~1
     set %~1=%~1
     echo Trim result: %~1
 goto :eof
 
 :getLast
+    @rem Get last directory of path.
+    @rem %1 variable output.
+    @rem %2 string path to get last token from.
+    @rem If given string path ends with colon (drive root), then drop the colon.
     echo Getting last token from: %~2
     if "%~N2"=="" (set "%~1=%~2") else (set "%~1=%~N2")
 goto :eof
