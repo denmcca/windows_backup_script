@@ -96,7 +96,12 @@ goto :eof
     @rem %2 string path to get last token from.
     @rem If given string path ends with colon (drive root), then drop the colon.
     echo Getting last token from: %~2
-    if "%~2:~-1"==":" (set "%~1=%~d2") else (set "%~1=%~n2%~x2")
+    
+    @rem setting variable to get last character.
+    @rem did not work directly on parameter.
+    set _path=%~2
+    
+    if "!_path:~-1!"==":" (set "%~1=%~d2") else (set "%~1=%~n2%~x2")
 goto :eof
 
 :main
