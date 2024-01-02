@@ -38,7 +38,7 @@ goto :main
 
     for /F "tokens=* delims=" %%d in (%inputFilePath%) DO (
         echo =========================
-
+        
         set sourceDir=%%~d
         set "sourceDir=!sourceDir:\=/!"
         @rem Use exclamation marks instead of percent signs for variables set in loop??
@@ -96,7 +96,12 @@ goto :eof
     @rem %2 string path to get last token from.
     @rem If given string path ends with colon (drive root), then drop the colon.
     echo Getting last token from: %~2
-    if "%~N2"=="" (set "%~1=%~2") else (set "%~1=%~N2")
+    
+    @rem setting variable to get last character.
+    @rem did not work directly on parameter.
+    set _path=%~2
+    
+    if "!_path:~-1!"==":" (set "%~1=%~d2") else (set "%~1=%~n2%~x2")
 goto :eof
 
 :main
